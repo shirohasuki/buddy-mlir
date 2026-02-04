@@ -43,6 +43,8 @@
 #include "GPU/TransformOps.h"
 #include "Gemmini/GemminiDialect.h"
 #include "Gemmini/GemminiOps.h"
+#include "IME/IMEDialect.h"
+#include "IME/IMEOps.h"
 #include "RVV/RVVDialect.h"
 #include "VIR/VIRAttrs.h"
 #include "VIR/VIRDialect.h"
@@ -83,8 +85,9 @@ void registerDepthwiseConv2DNhwcHwcOptimizePass();
 void registerLowerVectorExpPass();
 void registerLowerGemminiPass();
 void registerLowerLinalgToGemminiPass();
-void registerFuncBufferizeDynamicOffsetPass();
+void registerLowerIMEPass();
 void registerAssumeTightMemRefLayoutPass();
+void registerStaticizeMemRefLayoutPass();
 void registerConvertMemcpyToGPUPass();
 void registerLegalizeShmemOutliningPass();
 void registerMatMulTransposeBVecPass();
@@ -95,6 +98,7 @@ void registerMatMulVectorizationBLISPass();
 void registerSimplifyTosaReshapePass();
 void registerSiLUFusionPass();
 void registerSimplifyTosaMatmulScalarPass();
+void registerEliminateMemRefCopyPass();
 } // namespace buddy
 } // namespace mlir
 
@@ -118,6 +122,7 @@ int main(int argc, char **argv) {
   mlir::buddy::registerLowerVectorExpPass();
   mlir::buddy::registerLowerGemminiPass();
   mlir::buddy::registerLowerLinalgToGemminiPass();
+  mlir::buddy::registerLowerIMEPass();
 
   // Register Several Optimize Pass.
   mlir::buddy::registerMatMulVectorizationBLISPass();
@@ -137,8 +142,8 @@ int main(int argc, char **argv) {
   mlir::buddy::registerConvNhwcFhwcOptimizePass();
   mlir::buddy::registerConvNhwcFhwcTileOptimizePass();
   mlir::buddy::registerDepthwiseConv2DNhwcHwcOptimizePass();
-  mlir::buddy::registerFuncBufferizeDynamicOffsetPass();
   mlir::buddy::registerAssumeTightMemRefLayoutPass();
+  mlir::buddy::registerStaticizeMemRefLayoutPass();
   mlir::buddy::registerMatMulTransposeBVecPass();
   mlir::buddy::registerVIRToVectorPass();
   mlir::buddy::registerLinalgToVIRPass();
@@ -146,6 +151,8 @@ int main(int argc, char **argv) {
   mlir::buddy::registerSimplifyTosaReshapePass();
   // Register tosa.matmul(K=1,J=1) -> tosa.mul rewrite.
   mlir::buddy::registerSimplifyTosaMatmulScalarPass();
+  // Register eliminate redundant memref.copy pass.
+  mlir::buddy::registerEliminateMemRefCopyPass();
   mlir::buddy::registerSiLUFusionPass();
   // Register gpu passes
   mlir::buddy::registerConvertMemcpyToGPUPass();
@@ -163,7 +170,8 @@ int main(int argc, char **argv) {
                   buddy::rvv::RVVDialect,
                   buddy::vector_exp::VectorExpDialect,
                   buddy::vir::VIRDialect,
-                  buddy::gemmini::GemminiDialect>();
+                  buddy::gemmini::GemminiDialect,
+                  buddy::ime::IMEDialect>();
   // clang-format on
 
   mlir::buddy::registerBuddyGPUTransformOps(registry);

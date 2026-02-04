@@ -35,7 +35,9 @@ target_link_libraries(buddy-opt
   BuddyGemmini
   LowerGemminiPass
   LowerLinalgToGemminiPass
-  FuncBufferizeDynamicOffset
+  BuddyIME
+  BuddyIMETransforms
+  LowerIMEPass
   MLIRGPUPasses
   BuddyGPUTransformOPs
   MLIRTestTransforms
@@ -47,4 +49,6 @@ target_link_libraries(buddy-opt
   VIRToVectorPass
   TosaElementwiseFusion
   AssumeTightMemRefLayoutPass
+  StaticizeMemRefLayoutPass
+  EliminateMemRefCopyPass
   )

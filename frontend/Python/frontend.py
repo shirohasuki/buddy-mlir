@@ -118,7 +118,6 @@ class DynamoCompiler:
             "view.default": ViewOp,
             "ones.default": OnesOp,
             "full.default": FullOp,
-            "lt.Tensor": LessThanOp,
             "embedding.default": EmbeddingOp,
             "masked_fill.Scalar": MaskedFillOp,
             "slice.Tensor": SliceOp,
@@ -136,10 +135,12 @@ class DynamoCompiler:
             "index.Tensor": IndexOp,
             "neg.default": NegOp,
             "cat.default": CatOp,
-            "squeeze.dim": SqueezeOp,
             "bmm.default": BatchMatmulOp,
+            "div.default": DivOp,
             "div.Tensor": DivOp,
+            "div.Tensor_mode": DivTensorModeOp,
             "_softmax.default": SoftmaxOp,
+            "_log_softmax.default": LogSoftmaxOp,
             "clone.default": CloneOp,
             "silu.default": SiluOp,
             "add.Tensor": AddOp,
@@ -157,12 +158,67 @@ class DynamoCompiler:
             "getitem": GetItemOp,
             "convolution.default": Conv2dOp,
             "max_pool2d_with_indices.default": MaxPool2dWithIndicesOp,
+            "max_pool1d.default": MaxPool1dOp,
+            "max_pool1d_with_indices.default": MaxPool1dOp,
+            "max_pool3d.default": MaxPool3dOp,
+            "max_pool3d_with_indices.default": MaxPool3dOp,
+            "fractional_max_pool2d.default": FractionalMaxPool2dOp,
+            "fractional_max_pool2d.output": FractionalMaxPool2dOp,
+            "avg_pool1d.default": AvgPool1dOp,
+            "avg_pool3d.default": AvgPool3dOp,
+            "adaptive_max_pool1d.default": AdaptiveMaxPool1dOp,
+            "adaptive_max_pool2d.default": AdaptiveMaxPool2dOp,
+            "adaptive_avg_pool1d.default": AdaptiveAvgPool1dOp,
+            "_adaptive_avg_pool2d.default": AdaptiveAvgPool2dOp,
+            "_adaptive_avg_pool3d.default": AdaptiveAvgPool3dOp,
             "relu.default": ReluOp,
             "iota.default": IotaOp,
             "sigmoid.default": SigmoidOp,
+            "glu.default": GluOp,
+            "glu.out": GluOp,
+            "gru.input": GruOp,
             "scalar_tensor.default": ScalarTensorOp,
             "where.self": WhereOp,
             "sqrt.default": SqrtOp,
+            "abs.default": AbsOp,
+            "log.default": LogOp,
+            "ceil.default": CeilOp,
+            "floor.default": FloorOp,
+            "maximum.default": MaximumOp,
+            "minimum.default": MinimumOp,
+            "bitwise_not.default": BitwiseNotOp,
+            "logical_not.default": LogicalNotOp,
+            "clamp.default": ClampOp,
+            "logical_and.default": LogicalAndOp,
+            "logical_or.default": LogicalOrOp,
+            "bitwise_or.Tensor": BitwiseOrOp,
+            "bitwise_xor.Tensor": BitwiseXorOp,
+            "bitwise_or.Scalar_Tensor": BitwiseOrOp,
+            "bitwise_xor.Scalar_Tensor": BitwiseXorOp,
+            "bitwise_left_shift.Tensor": BitwiseLeftShiftOp,
+            "bitwise_left_shift.Tensor_Scalar": BitwiseLeftShiftOp,
+            "bitwise_left_shift.Scalar_Tensor": BitwiseLeftShiftOp,
+            "bitwise_right_shift.Tensor": BitwiseRightShiftOp,
+            "bitwise_right_shift.Tensor_Scalar": BitwiseRightShiftOp,
+            "bitwise_right_shift.Scalar_Tensor": BitwiseRightShiftOp,
+            "amin.default": AminOp,
+            "min.default": AminOp,
+            "min.unary_out": AminOp,
+            "avg_pool2d.default": AvgPool2dOp,
+            "logical_xor.default": LogicalXorOp,
+            "prod.default": ProdOp,
+            "prod.dim_int": ProdOp,
+            "eq.Tensor": EqTensorOp,
+            "ne.Tensor": NeTensorOp,
+            "gt.Tensor": GtTensorOp,
+            "ge.Tensor": GeTensorOp,
+            "lt.Tensor": LtTensorOp,
+            "le.Tensor": LeTensorOp,
+            "log10.default": Log10Op,
+            "log2.default": Log2Op,
+            "log1p.default": Log1pOp,
+            "expm1.default": Expm1Op,
+            "constant_pad_nd.default": ConstantPadNdOp,
             "reciprocal.default": ReciprocalOp,
             "clamp_min.default": ClampMinOp,
             "clamp_max.default": ClampMaxOp,
@@ -175,21 +231,299 @@ class DynamoCompiler:
             "gt.Scalar": GtOp,
             "_scaled_dot_product_flash_attention_for_cpu.default": ScaledDotProductFlashAttentionForCpuOp,
             "ge.Scalar": GeOp,
-            "gt.Tensor": GreaterThanOp,
+            "gcd.default": GcdOp,
+            "gcd.out": GcdOp,
+            "gcd_.default": GcdOp,
+            "kthvalue.default": KthValueOp,
+            "kthvalue.values": KthValueOp,
+            "kthvalue.dimname": KthValueOp,
+            "kthvalue.dimname_out": KthValueOp,
             "_unsafe_index.Tensor": UnsafeIndexOp,
             "eq.Scalar": EqualOp,
             "copy.default": CopyOp,
             "slice_scatter.default": SliceScatterOp,
-            "le.Tensor": LeOp,
             "bitwise_and.Tensor": BitwiseAndTensorOp,
+            "bitwise_and.Scalar_Tensor": BitwiseAndTensorOp,
+            "bitwise_or.Scalar_Tensor_out": BitwiseOrOp,
+            "bitwise_xor.Scalar_Tensor_out": BitwiseXorOp,
+            "bitwise_left_shift.Tensor_out": BitwiseLeftShiftOp,
+            "bitwise_left_shift.Tensor_Scalar_out": BitwiseLeftShiftOp,
+            "bitwise_left_shift.Scalar_Tensor_out": BitwiseLeftShiftOp,
+            "bitwise_right_shift.Tensor_out": BitwiseRightShiftOp,
+            "bitwise_right_shift.Tensor_Scalar_out": BitwiseRightShiftOp,
+            "bitwise_right_shift.Scalar_Tensor_out": BitwiseRightShiftOp,
             "index_put.default": IndexPutOp,
             "ne.Scalar": NeScalarOp,
             "cumsum.default": CumsumOp,
-            "eq.Tensor": EqualOp,
+            "cumprod.default": CumProdOp,
+            "sort.default": SortOp,
+            "sort.stable": SortOp,
+            "sort.values_stable": SortOp,
+            "searchsorted.Tensor": SearchSortedOp,
+            "searchsorted.Tensor_out": SearchSortedOp,
+            "searchsorted.Scalar": SearchSortedOp,
+            "searchsorted.Scalar_out": SearchSortedOp,
             "_tensor_constant": TensorConstantOp,
             "lift_fresh_copy.default": LiftFreshCopyOp,
             "repeat.default": RepeatOp,
+            "repeat_interleave.Tensor": RepeatInterleaveOp,
+            "repeat_interleave.Tensor_out": RepeatInterleaveOp,
+            "repeat_interleave.self_Tensor": RepeatInterleaveOp,
+            "repeat_interleave.self_int": RepeatInterleaveOp,
             "as_strided.default": AsStridedOp,
+            "as_strided_copy.default": AsStridedOp,
+            "as_strided_copy.out": AsStridedOp,
+            "as_strided_scatter.default": AsStridedScatterOp,
+            "as_strided_scatter.out": AsStridedScatterOp,
+            "scatter.src": ScatterSrcOp,
+            "scatter.value": ScatterValueOp,
+            "scatter.reduce": ScatterReduceOp,
+            "scatter.value_reduce": ScatterReduceOp,
+            "scatter.reduce_out": ScatterReduceOp,
+            "scatter.value_reduce_out": ScatterReduceOp,
+            "scatter_.reduce": ScatterReduceOp,
+            "scatter_.value_reduce": ScatterReduceOp,
+            "scatter_reduce.two": ScatterReduceOp,
+            "index_reduce.default": ScatterReduceOp,
+            "index_reduce.out": ScatterReduceOp,
+            "index_reduce_.default": ScatterReduceOp,
+            "gather.default": GatherOp,
+            "native_layer_norm.default": NativeLayerNormOp,
+            "native_group_norm.default": NativeGroupNormOp,
+            "_native_batch_norm_legit.default": NativeBatchNormLegitOp,
+            "_native_batch_norm_legit.no_stats": NativeBatchNormLegitNoStatsOp,
+            "_native_batch_norm_legit_no_training.default": NativeBatchNormLegitNoTrainingOp,
+            "native_dropout.default": NativeDropoutOp,
+            "upsample_bilinear2d.vec": UpsampleBilinear2dVecOp,
+            "upsample_nearest2d.vec": UpsampleNearest2dVecOp,
+            "grid_sampler_2d.default": GridSampler2dOp,
+            "grid_sampler_3d.default": GridSampler3dOp,
+            "grid_sampler_3d.out": GridSampler3dOp,
+            "col2im.default": Col2imOp,
+            "sym_size.int": SymSizeOp,
+            "sym_stride.int": SymStrideOp,
+            "sym_numel.default": SymNumelOp,
+            "sym_storage_offset.default": SymStorageOffsetOp,
+            "gelu.default": GeluOp,
+            "flip.default": FlipOp,
+            "leaky_relu.default": LeakyReluOp,
+            "hardtanh.default": HardtanhOp,
+            "elu.default": EluOp,
+            "sign.default": SignOp,
+            "signbit.default": SignbitOp,
+            "signbit.out": SignbitOp,
+            "round.default": RoundOp,
+            "trunc.default": TruncOp,
+            "sinh.default": SinhOp,
+            "cosh.default": CoshOp,
+            "tan.default": TanOp,
+            "exp2.default": Exp2Op,
+            "zeros.default": ZerosOp,
+            "zeros_like.default": ZerosLikeOp,
+            "ones_like.default": OnesLikeOp,
+            "full_like.default": FullLikeOp,
+            "all.default": AllOp,
+            "all.dim": AllOp,
+            "any.default": AnyOp,
+            "any.dim": AnyOp,
+            "isinf.default": IsInfOp,
+            "isnan.default": IsNanOp,
+            "floor_divide.default": FloorDivideOp,
+            "fmod.Tensor": FmodOp,
+            "fmod.Scalar": FmodOp,
+            "remainder.Tensor": RemainderOp,
+            "remainder.Scalar": RemainderOp,
+            "remainder.Scalar_Tensor": RemainderOp,
+            "remainder.Scalar_Tensor_out": RemainderOp,
+            "pow.Tensor_Tensor": PowTensorTensorOp,
+            "softplus.default": SoftplusOp,
+            "hardswish.default": HardswishOp,
+            "tile.default": TileOp,
+            "stack.default": StackOp,
+            "lerp.Tensor": LerpOp,
+            "lerp.Scalar": LerpOp,
+            "clamp.Tensor": ClampTensorOp,
+            "le.Scalar": LeScalarOp,
+            "lt.Scalar": LtScalarOp,
+            "index_select.default": IndexSelectOp,
+            "scatter_add.default": ScatterAddOp,
+            "arange.start_step": ArangeStartStepOp,
+            "min.dim": MinDimOp,
+            "min.dim_min": MinDimOp,
+            "argmin.default": ArgMinOp,
+            "squeeze.default": SqueezeOp,
+            "squeeze.dim": SqueezeDimOp,
+            "squeeze.dims": SqueezeDimsOp,
+            "unfold.default": UnfoldOp,
+            "uniform.default": UniformOp,
+            "uniform.out": UniformOp,
+            "uniform_.default": UniformOp,
+            "topk.default": TopkOp,
+            "unbind.int": UnbindOp,
+            # Batched matrix operations
+            "baddbmm.default": BaddbmmOp,
+            # Special math functions
+            "lgamma.default": LgammaOp,
+            "digamma.default": DigammaOp,
+            "logcumsumexp.default": LogCumsumExpOp,
+            "logcumsumexp.out": LogCumsumExpOp,
+            "logcumsumexp.dimname": LogCumsumExpOp,
+            "logcumsumexp.dimname_out": LogCumsumExpOp,
+            "frexp.Tensor": FrexpOp,
+            "frexp.Tensor_out": FrexpOp,
+            "histc.default": HistcOp,
+            "histc.out": HistcOp,
+            "igamma.default": IgammaOp,
+            "igamma.out": IgammaOp,
+            "igamma_.default": IgammaOp,
+            "igammac.default": IgammacOp,
+            "igammac.out": IgammacOp,
+            "igammac_.default": IgammacOp,
+            "median.default": MedianOp,
+            "median.dim": MedianOp,
+            "median.dim_values": MedianOp,
+            "median.names_dim": MedianOp,
+            "median.names_dim_values": MedianOp,
+            "median.out": MedianOp,
+            "nanmedian.default": NanMedianOp,
+            "nanmedian.dim": NanMedianOp,
+            "nanmedian.dim_values": NanMedianOp,
+            "nanmedian.names_dim": NanMedianOp,
+            "nanmedian.names_dim_values": NanMedianOp,
+            "nanmedian.out": NanMedianOp,
+            "mode.default": ModeOp,
+            "mode.values": ModeOp,
+            "mode.dimname": ModeOp,
+            "mode.dimname_out": ModeOp,
+            "new_empty_strided.default": NewEmptyStridedOp,
+            "nonzero_static.default": NonzeroStaticOp,
+            "min.other": MinimumOp,
+            "min.out": MinimumOp,
+            "i0.default": I0Op,
+            "erfc.default": ErfcOp,
+            "erfinv.default": ErfinvOp,
+            "special_entr.default": SpecialEntrOp,
+            "special_entr.out": SpecialEntrOp,
+            "special_i0e.default": SpecialI0eOp,
+            "special_i0e.out": SpecialI0eOp,
+            "special_i1.default": SpecialI1Op,
+            "special_i1.out": SpecialI1Op,
+            "special_i1e.default": SpecialI1eOp,
+            "special_i1e.out": SpecialI1eOp,
+            "special_modified_bessel_i0.default": I0Op,
+            "special_modified_bessel_i0.out": I0Op,
+            "special_modified_bessel_i1.default": SpecialI1Op,
+            "special_modified_bessel_i1.out": SpecialI1Op,
+            "special_erfcx.default": SpecialErfcxOp,
+            "special_erfcx.out": SpecialErfcxOp,
+            "special_ndtr.default": SpecialNdtrOp,
+            "special_ndtr.out": SpecialNdtrOp,
+            "special_log_ndtr.default": SpecialLogNdtrOp,
+            "special_log_ndtr.out": SpecialLogNdtrOp,
+            "special_ndtri.default": SpecialNdtriOp,
+            "special_ndtri.out": SpecialNdtriOp,
+            "special_spherical_bessel_j0.default": SpecialSphericalBesselJ0Op,
+            "special_spherical_bessel_j0.out": SpecialSphericalBesselJ0Op,
+            # Cumulative operations
+            "cummax.default": CummaxOp,
+            "cummin.default": CumminOp,
+            # Tensor clamp operations
+            "clamp_min.Tensor": ClampMinTensorOp,
+            "clamp_max.Tensor": ClampMaxTensorOp,
+            # Additional elementwise operations
+            "hypot.default": HypotOp,
+            "copysign.Tensor": CopysignOp,
+            "copysign.Scalar": CopysignOp,
+            "copysign.Scalar_out": CopysignOp,
+            "copysign_.Scalar": CopysignOp,
+            "nextafter.default": NextafterOp,
+            "masked_scatter.default": MaskedScatterOp,
+            "rev.default": RevOp,
+            # Scalar arithmetic operations
+            "add.Scalar": AddScalarOp,
+            "sub.Scalar": SubScalarOp,
+            "div.Scalar": DivScalarOp,
+            "div.Scalar_mode": DivScalarModeOp,
+            "pow.Scalar": PowScalarOp,
+            # Reduction operations
+            "mean.default": MeanDefaultOp,
+            "var.correction": VarCorrectionOp,
+            "var.dim": VarDimOp,
+            "any.dims": AnyDimsOp,
+            # Trigonometric functions
+            "acos.default": AcosOp,
+            "asin.default": AsinOp,
+            "atan.default": AtanOp,
+            "atan2.default": Atan2Op,
+            "acosh.default": AcoshOp,
+            "asinh.default": AsinhOp,
+            "atanh.default": AtanhOp,
+            # Other operations
+            "fill.Scalar": FillScalarOp,
+            "diagonal.default": DiagonalOp,
+            "diagonal_scatter.default": DiagonalScatterOp,
+            "diagonal_scatter.out": DiagonalScatterOp,
+            "alias.default": AliasOp,
+            "empty.memory_format": EmptyOp,
+            "rand.default": RandOp,
+            "randn.default": RandnOp,
+            "select_scatter.default": SelectScatterOp,
+            "select_scatter.out": SelectScatterOp,
+            "split_with_sizes.default": SplitWithSizesOp,
+            "max.dim": MaxDimOp,
+            "nonzero.default": NonzeroOp,
+            # Standard deviation operations
+            "std.default": StdDefaultOp,
+            "std.dim": StdDimOp,
+            "std.correction": StdCorrectionOp,
+            # Additional reduction operations
+            "sum.default": SumDefaultOp,
+            "all.dims": AllDimsOp,
+            "var.default": VarDefaultOp,
+            # Norm operations
+            "norm.Scalar": NormScalarOp,
+            "norm.ScalarOpt_dim": NormScalarOptDimOp,
+            # Backward operations (Gradient Computation)
+            "_adaptive_avg_pool2d_backward.default": AdaptiveAvgPool2dBackwardOp,
+            "avg_pool2d_backward.default": AvgPool2dBackwardOp,
+            "convolution_backward.default": ConvolutionBackwardOp,
+            "embedding_dense_backward.default": EmbeddingDenseBackwardOp,
+            "max_pool2d_with_indices_backward.default": MaxPool2dWithIndicesBackwardOp,
+            "native_group_norm_backward.default": NativeGroupNormBackwardOp,
+            "native_layer_norm_backward.default": NativeLayerNormBackwardOp,
+            # Bitwise scalar operations
+            "bitwise_and.Scalar": BitwiseAndScalarOp,
+            "bitwise_or.Scalar": BitwiseOrScalarOp,
+            "bitwise_xor.Scalar": BitwiseXorScalarOp,
+            "bitwise_and.Scalar_Tensor_out": BitwiseAndTensorOp,
+            "bitwise_and_.Tensor": BitwiseAndTensorOp,
+            "bitwise_and_.Scalar": BitwiseAndScalarOp,
+            "bitwise_or_.Tensor": BitwiseOrOp,
+            "bitwise_or_.Scalar": BitwiseOrScalarOp,
+            "bitwise_xor_.Tensor": BitwiseXorOp,
+            "bitwise_xor_.Scalar": BitwiseXorScalarOp,
+            "bitwise_left_shift_.Tensor": BitwiseLeftShiftOp,
+            "bitwise_left_shift_.Tensor_Scalar": BitwiseLeftShiftOp,
+            "bitwise_right_shift_.Tensor": BitwiseRightShiftOp,
+            "bitwise_right_shift_.Tensor_Scalar": BitwiseRightShiftOp,
+            # Padding operations
+            "reflection_pad1d.default": ReflectionPad1dOp,
+            "reflection_pad2d.default": ReflectionPad2dOp,
+            "reflection_pad3d.default": ReflectionPad3dOp,
+            "replication_pad2d.default": ReplicationPad2dOp,
+            "replication_pad3d.default": ReplicationPad3dOp,
+            # Other missing core aten operations
+            "empty_strided.default": EmptyStridedOp,
+            "randperm.default": RandpermOp,
+            # Core Aten remaining operations
+            "_embedding_bag.default": EmbeddingBagOp,
+            "_embedding_bag_forward_only.default": EmbeddingBagOp,
+            "_cdist_forward.default": CdistForwardOp,
+            "_pdist_forward.default": PdistForwardOp,
+            "_fft_r2c.default": FftR2cOp,
+            "_local_scalar_dense.default": LocalScalarDenseOp,
+            "resize_.default": ResizeOp,
+            "resize.default": ResizeOp,
         }
 
     @property
@@ -252,16 +586,25 @@ class DynamoCompiler:
             for input_arg in node_input[0]:
                 buddy_node.add_argument(str(input_arg))
             return buddy_node
-        for input_arg in node_input:
-            if isinstance(input_arg, torch.fx.Node):
-                buddy_node.add_argument(str(input_arg))
-                buddy_node.add_parent(str(input_arg))
-            elif isinstance(input_arg, torch.dtype):
-                buddy_node.add_argument(
-                    self._torch_dtype_translate(str(input_arg))
-                )
+
+        def _add_arg_and_parents(arg):
+            if isinstance(arg, torch.fx.Node):
+                buddy_node.add_argument(str(arg))
+                buddy_node.add_parent(str(arg))
+            elif isinstance(arg, torch.dtype):
+                buddy_node.add_argument(self._torch_dtype_translate(str(arg)))
+            elif isinstance(arg, (list, tuple)):
+                # Traverse elements to collect parent nodes but keep the container as a single argument
+                for item in arg:
+                    if isinstance(item, torch.fx.Node):
+                        buddy_node.add_parent(str(item))
+                buddy_node.add_argument(arg)
             else:
-                buddy_node.add_argument(input_arg)
+                buddy_node.add_argument(arg)
+            return arg
+
+        for input_arg in node_input:
+            _add_arg_and_parents(input_arg)
         for user in node_users:
             buddy_node.add_children(user)
         if node_kwargs is None:
@@ -313,7 +656,6 @@ class DynamoCompiler:
 
         def _compiler(_gm: torch.fx.GraphModule, _inputs: List[torch.Tensor]):
             """Compile a FX graph in Aten/Prims IR to MLIR."""
-            nonlocal params_flat
             num_cached_kv = 0
             if self._model_config.decode_with_cache:
                 num_cached_kv = self._model_config.num_hidden_layers * 2
@@ -399,14 +741,28 @@ class DynamoCompiler:
                     if "_tensor_constant" in gm_node.name:
                         import re
 
-                        stack_trace = gm_node.meta.get("stack_trace")
+                        stack_trace = gm_node.meta.get("stack_trace") or ""
                         match = re.search(
                             r"torch\.tensor\(([-+]?\d+(\.\d+)?), dtype=[a-zA-Z]+\)",
                             stack_trace,
                         )
-                        if not match:
-                            assert False
-                        value = float(match.group(1))
+                        value = None
+                        if match:
+                            value = float(match.group(1))
+                        if value is None:
+                            val = gm_node.meta.get("val")
+                            if isinstance(val, torch.Tensor):
+                                if val.numel() != 1:
+                                    raise NotImplementedError(
+                                        "_tensor_constant only supports scalar tensors"
+                                    )
+                                value = val.item()
+                            elif isinstance(val, (int, float)):
+                                value = val
+                        if value is None:
+                            raise NotImplementedError(
+                                "Unsupported _tensor_constant format"
+                            )
                         gm_node.insert_arg(len(gm_node.args), value)
                         val = gm_node.meta.get("val")
                         node_shape = val.shape
@@ -426,14 +782,63 @@ class DynamoCompiler:
                     # num_returns = len(gm_node.target._schema.returns)
                     num_returns = (
                         len(val)
-                        if isinstance(val, list)
+                        if isinstance(val, (list, tuple))
                         else len(gm_node.target._schema.returns)
                     )
                     if num_returns == 1:
-                        node_dtype = self._torch_dtype_translate(
-                            str(tensor_meta.dtype)
-                        )
-                        node_shape = tensor_meta.shape
+                        if tensor_meta is None:
+                            if isinstance(val, torch.Tensor):
+                                node_dtype = self._torch_dtype_translate(
+                                    str(val.dtype)
+                                )
+                                node_shape = val.shape
+                            elif str(gm_node.target) == "aten.unbind.int":
+                                input_node = gm_node.args[0]
+                                dim = (
+                                    gm_node.args[1]
+                                    if len(gm_node.args) > 1
+                                    else 0
+                                )
+                                input_meta = input_node.meta.get("tensor_meta")
+                                input_val = input_node.meta.get("val")
+                                if input_meta is None:
+                                    if not isinstance(input_val, torch.Tensor):
+                                        raise RuntimeError(
+                                            "Missing input meta for aten.unbind.int"
+                                        )
+                                    input_shape = list(input_val.shape)
+                                    input_dtype = input_val.dtype
+                                else:
+                                    input_shape = list(input_meta.shape)
+                                    input_dtype = input_meta.dtype
+                                if dim < 0:
+                                    dim += len(input_shape)
+                                length = input_shape[dim]
+                                if length < 0:
+                                    raise RuntimeError(
+                                        "Dynamic unbind dimension not supported"
+                                    )
+                                out_shape = tuple(
+                                    input_shape[:dim] + input_shape[dim + 1 :]
+                                )
+                                node_shape = tuple([out_shape] * length)
+                                node_dtype = tuple(
+                                    [
+                                        self._torch_dtype_translate(
+                                            str(input_dtype)
+                                        )
+                                    ]
+                                    * length
+                                )
+                            else:
+                                raise RuntimeError(
+                                    f"Missing tensor_meta for {gm_node.target}"
+                                )
+                        else:
+                            node_dtype = self._torch_dtype_translate(
+                                str(tensor_meta.dtype)
+                            )
+                            node_shape = tensor_meta.shape
                     elif num_returns > 1:
                         node_dtype = tuple(
                             [
